@@ -1,21 +1,14 @@
 <?php
 
     include('components/header.php');
-    include('components/db_connect.php');
+    include('createDB.php');
+    $con = new DB();
+    
     $title ='';
-    // if(!array_filter($errors)){
     if(isset($_POST['addCat'])){
-
         if(!empty($_POST['title'])){
-            $title = mysqli_real_escape_string($connection,$_POST['title']);
-
-            $sql = "INSERT INTO categories (title) VALUES ('$title')";
-            // echo "adfdas";
-            if(mysqli_query($connection,$sql)){
-                header("Location: categories.php");
-            }else{
-                echo "qurey error: ".mysqli_error($connection);
-            }
+            $title = mysqli_real_escape_string($con->connection,$_POST['title']);
+            $con->addCategory($title);
         }else{
             echo "title is required";
         }
@@ -36,7 +29,6 @@
     <form action="addCategory.php" method="post">
         <label for="title">Category name: </label>
         <input type="text" name="title" >
-        <!-- <div class="text-danger"><?PHP echo $errors['title'] ?></div> -->
         <input type="submit" value="Submit" name="addCat">
     </form>
     </div>

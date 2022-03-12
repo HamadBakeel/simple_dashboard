@@ -1,47 +1,35 @@
 <?php
 
     include('components/header.php');
-    include('components/db_connect.php');
+    include('createDB.php');
+    $con = new DB();
     $title ='';
 
-        $sql = "SELECT * FROM categories";
-        $result = mysqli_query($connection,$sql);
-        $categories = mysqli_fetch_all($result,MYSQLI_ASSOC);
-        mysqli_free_result($result);
-        if(isset($_POST['addProduct'])){
-            if(!empty($_POST['productName'])){
-                $productName = mysqli_real_escape_string($connection,$_POST['productName']);
-                $category = $_POST['categories'] ;
-                $sql = "INSERT INTO products (product_name,cat_id) VALUES ('$productName','$category')";
-                if(mysqli_query($connection,$sql)){
-                    header("Location: products.php");
-                }else{
-                    echo "qurey error: ".mysqli_error($connection);
-                }
-            }else{
-                echo "product name is required";
-            }
+    $categories = $con->fetchCategories();
+
+    if(isset($_POST['addProduct'])){
+        $con->addProduct();
+        }else{
+            echo "product name is required";
         }
 
-        if(isset($_POST['editProduct'])){
-            $id = $_POST['id_to_edit'];
-            $sql = "SELECT * FROM products WHERE id = $id";
-            $result = mysqli_query($connection,$sql); 
-            $product = mysqli_fetch_assoc($result);
-        }
+    if(isset($_POST['editProduct'])){
+        $id = $_POST['id_to_edit'];
+        $sql = "SELECT * FROM products WHERE id = $id";
+        $result = mysqli_query($con->connection,$sql); 
+        $product = mysqli_fetch_assoc($result);
+    }
 
-        if(isset($_POST['updateProduct'])){
-            $id = $_POST['id_to_edit'];
-            $sql = "UPDATE `products` SET `cat_id`='[value-2]',`product_name`='[value-3]' WHERE 1";
-            if(mysqli_query($connection,$sql)){
-                header("Location: products.php");
-            }else{
-                echo "qurey error: ".mysqli_error($connection);
-            }
-            
-            // $result = mysqli_query($connection,$sql); 
-            // $product = mysqli_fetch_assoc($result);
+    if(isset($_POST['updateProduct'])){
+        $id = $_POST['id_to_edit'];
+        $sql = "UPDATE `products` SET `cat_id`='[value-2]',`product_name`='[value-3]' WHERE 1";
+        if(mysqli_query($con->connection,$sql)){
+            header("Location: products.php");
+        }else{
+            echo "qurey error: ".mysqli_error($con->connection);
         }
+        
+    }
 
 ?>
 
